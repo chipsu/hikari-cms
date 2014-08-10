@@ -1,0 +1,6 @@
+div.col.span-4
+    nav.vertical
+        %foreach($services, $service)
+            li
+                a(href=$service.url('list'))
+                    =$service.name
