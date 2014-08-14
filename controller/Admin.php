@@ -1,6 +1,6 @@
 <?php
 
-namespace \hikari\cms\controller;
+namespace hikari\cms\controller;
 
 class Admin extends \hikari\controller\Controller implements RestInterface {
     use \hikari\controller\Rest;
@@ -11,7 +11,29 @@ class Admin extends \hikari\controller\Controller implements RestInterface {
         # - ... stuff appears automagically 
         # - admin.coffee
         return [
-            'services' => [...],
+            'menu' => [
+                [ 'title' => 'Dashboard', ],
+                [],
+                [ 'title' => 'Pages', ],
+                [ 'title' => 'Posts', ],
+                [
+                    'title' => 'Webshop',
+                    'items' => [
+                        [ 'title' => 'Products', ],
+                        [ 'title' => 'Orders', ],
+                    ],
+                ]
+                [
+                    'title' => 'Accounts',
+                    'items' => [
+                        [ 'title' => 'Groups', ],
+                        [ 'title' => 'Users', ],
+                    ],
+                ]
+                [ 'title' => 'Account', ],
+                [ 'title' => 'System', ],
+                [ 'title' => 'Help', ],
+            ],
         ];
     }
 }
