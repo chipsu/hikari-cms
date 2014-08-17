@@ -68,6 +68,7 @@ Product
 Data:
     Created
     Updated
+    UserData
 
 MetaData(Data):
     ...
@@ -75,27 +76,30 @@ MetaData(Data):
 Price(MetaData):
     currency: SEK
     value: 34543
+    pricelist: ID (category or tag on Data?)
 
 Content(Data):
     String description
-    Node node
-    Node[] otherNodes
+    Page page (??? primary)
+    Page[] pages (secondary)
+    Tag[] tags (for filtering and organisation)
+    parent? (product groups, packages ...)
 
 Product(Content):
     String articleNumber: "1324-3"
     Price[] prices
 
-Node
+Post(Content):
+    ...
+
+Page
     name
     uuid
-    parent
+    PageID parent
+    PageID[] lineage
     layout
-    Content[] content:
+    Content[] content: (uuid?)
         Product product
-
-    # OR
-    Content content
-    Node[] nodes # 
 #####
 
 Page : Content container, contains zero or more Posts, has child Pages
