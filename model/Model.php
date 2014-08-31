@@ -2,9 +2,55 @@
 
 namespace hikari\cms\model;
 
-class Model extends \hikari\component\Component {
+class Attribute {
+    public $length;
+}
 
-    static function find($criteria, array $options = []) {
+class Id extends Attribute {
+
+    function to() {
+
+    }
+}
+
+class Date extends Attribute {
+
+}
+
+class String {
+
+}
+
+class Integer {
+
+}
+/*
+ $post->created = 'NOW';
+ ---
+ model::get($key)
+    if not $this->attributes[$key] instanceof Attribute
+        $this->attributes[$key] = new static::$attributes[$key]($value)
+
+ model::save()
+    $data = []
+    foreach $this->attributes
+        if changed
+            $data[$key] = $attr->serialize() // to mongo.. or $db->serialize($attr)
+    $db->save($data)
+
+
+ foreach(Page::all() as $page) {
+    foreach($page->contents as $content) {
+      echo $content->text;
+    }
+ }
+
+*/
+
+class ModelBase extends \hikari\component\Component {
+    public $attributes;
+
+    static function one($criteria, array $options = []) {
         $result = null;
         $result = ['dummy' => 'result'];
         if(!empty($options['hydrator'])) {
@@ -13,7 +59,7 @@ class Model extends \hikari\component\Component {
         return $result;
     }
 
-    static function findAll($criteria, array $options = []) {
+    static function all($criteria, array $options = []) {
         $result = [];
         $result[] = ['dummy' => 'result'];
         if(!empty($options['hydrator'])) {
@@ -23,9 +69,94 @@ class Model extends \hikari\component\Component {
                 'options' => $options,
             ]);
         }
-        return $result;
+       
     }
 
+    static function attributes() {
+        return [];
+    }
+
+    function __construct(array $properties = []) {
+        parent::__construct();
+        $this->initialize();
+    }
+
+    function initialize() {
+        $this->attributes = static::attributes();
+        foreach($this->attributes as $key => $value) {
+            $this->attributes[$key] = null;
+        }
+        parent::initialize();
+    }
+
+    function id() {
+        return $this->get('id');
+    }
+
+    function get($key, $default = null) {
+        return isset($this->attributes[$key]) ? $this->attributes[$key] : $default;
+    }
+
+    function set($key, $value) {
+        $this->attributes[$key] = $value;
+    }
+
+    function save(array $options = []) {
+        $noevents = !empty($options['noevents']);
+        if($noevents || $this->beforeSave()) {
+
+            if(!$noevents) {
+                $this->afterSave();
+            }
+        }
+    }
+
+    function beforeSave() {
+        return true;
+    }
+
+    function afterSave() {
+    }
+
+    function __set($key, $value) {
+        $this->attributes[$key] = $value;
+    }
+
+    function __get($key) {
+        if(array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
+        \hikari\exception\Argument::raise('The property %s does not exist on this object', $key);
+    }
+
+    function __unset($key) {
+        unset($this->attributes[$key]);
+    }
+}
+
+class Model extends ModelBase {
+
+    /// move to core model return $result;
+
+
+    /// end
+
+
+    static function attributes() {
+        return array_merge(parent::attributes(), [
+            'created' => 'Date',
+            'updated' => 'Date',
+        ]);
+    }
+
+    function beforeSave() {
+        $now = new Date;
+        if(!$this->created) {
+            $this->created = $now;
+        }
+        $this->updated = $now;
+        return parent::beforeSave();
+    }
 
 }
 
