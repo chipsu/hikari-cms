@@ -3,16 +3,97 @@
 namespace hikari\cms\controller;
 
 interface RestInterface {
-    function poo();
+    function get();
+    function put();
+    function post();
+    function delete();
 }
 
 trait RestTrait {
-    function poo() {
+    function get() {
+        \hikari\exception\NotSupported::raise();
+    }
+
+    function put() {
+        \hikari\exception\NotSupported::raise();
+    }
+
+    function post() {
+        \hikari\exception\NotSupported::raise();
+    }
+
+    function delete() {
+        \hikari\exception\NotSupported::raise();
+    }
+
+}
+
+trait ModelTrait {
+    static function modelClassName() {
+        return str_replace('\\controller\\', '\\model\\', get_called_class());
     }
 }
 
-class Admin extends \hikari\controller\Controller implements RestInterface {
-    use RestTrait;
+trait ModelRestTrait {
+    use RestTrait, ModelTrait;
+
+    function get() {
+        $class = static::modelClassName();
+        $model = $class::one($this->request->get('id'));
+        var_dump($model);
+    }
+}
+
+interface CrudInterface {
+    function create();
+    function read();
+    function update();
+    function remove();
+    static function modelClassName();
+}
+
+trait CrudTrait {
+    use ModelTrait;
+
+    function create() {
+        $class = static::modelClassName();
+        $model = new $class;
+        $model->save();
+        var_dump($model);
+    }
+
+    function read() {
+        $class = static::modelClassName();
+        $model = $class::one($this->request->get('id'));
+        var_dump($model);
+    }
+
+    function update() {
+        $class = static::modelClassName();
+        $model = $class::one($this->request->get('id'));
+        $model->attributes($this->request->data);
+        if($model->validate()) {
+            $model->save();
+        }
+        var_dump($model);
+    }
+
+    function remove() {
+        $class = static::modelClassName();
+        $model = $class::one($this->request->get('id'));
+        $model->delete();
+        var_dump($model);
+    }
+}
+
+class Content extends \hikari\controller\Controller implements RestInterface {
+    use ModelRestTrait, CrudTrait {
+        ModelRestTrait::modelClassName insteadof CrudTrait;
+    }
+}
+
+class Admin extends \hikari\controller\Controller implements RestInterface, CrudInterface {
+    use RestTrait, CrudTrait;
 
     public $componentProperties = [
         'view' => [
@@ -21,6 +102,12 @@ class Admin extends \hikari\controller\Controller implements RestInterface {
     ];
 
     function index() {
+        $Content = '\hikari\cms\controller\Content';
+        var_dump($Content::modelClassName());
+        $c = new Content;
+        #$c->get();
+        $c->create();
+        die;
 
         # hmm
         # - create a list of all Rest controllers that are enabled
