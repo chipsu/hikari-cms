@@ -49,19 +49,42 @@ class Integer {
 
 class ModelBase extends \hikari\component\Component {
     public $attributes;
+    static $db;
+    static $client;
+
+    static function client() {
+        if(static::$client === null) {
+            static::$client = new \MongoClient();
+        }
+        return static::$client;
+    }
+
+    static function db() {
+        if(static::$db === null) {
+            static::$db = static::client()->cms;
+        }
+        return static::$db;
+    }
+
+    static function table() {
+        $tableName = static::tableName();
+        return static::db()->{$tableName};
+    }
+
+    static function tableName() {
+        return str_replace('\\', '_', get_called_class());
+    }
 
     static function one($criteria, array $options = []) {
-        $result = null;
-        $result = ['dummy' => 'result'];
-        if(!empty($options['hydrator'])) {
-            $result = new static($result);
+        $result = static::table()->findOne($criteria);
+        if($result && !empty($options['hydrator'])) {
+            $result = new static(['attributes' => $result]);
         }
         return $result;
     }
 
     static function all($criteria, array $options = []) {
-        $result = [];
-        $result[] = ['dummy' => 'result'];
+        $result = static::table()->find($criteria);
         if(!empty($options['hydrator'])) {
             return new HydratorIterator([
                 'result' => $result,
@@ -69,28 +92,30 @@ class ModelBase extends \hikari\component\Component {
                 'options' => $options,
             ]);
         }
-       
+       return $result;
     }
 
     static function attributes() {
-        return [];
+        return ['_id' => 'Id'];
     }
 
     function __construct(array $properties = []) {
-        parent::__construct();
+        parent::__construct($properties);
         $this->initialize();
     }
 
     function initialize() {
-        $this->attributes = static::attributes();
-        foreach($this->attributes as $key => $value) {
-            $this->attributes[$key] = null;
+        $attributes = static::attributes();
+        foreach($attributes as $key => $value) {
+            if(!isset($this->attributes[$key])) {
+                $this->attributes[$key] = null;
+            }
         }
         parent::initialize();
     }
 
     function id() {
-        return $this->get('id');
+        return $this->get('_id');
     }
 
     function get($key, $default = null) {
@@ -104,6 +129,11 @@ class ModelBase extends \hikari\component\Component {
     function save(array $options = []) {
         $noevents = !empty($options['noevents']);
         if($noevents || $this->beforeSave()) {
+            if(empty($this->attributes['_id'])) {
+                $this->attributes['_id'] = new \MongoId;
+            }
+
+            static::table()->insert($this->attributes);
 
             if(!$noevents) {
                 $this->afterSave();
@@ -166,28 +196,27 @@ class HydratorIterator extends \hikari\component\Component implements \Iterator 
     public $options;
 
     function current() {
-        $result = current($this->result);
+        $result = $this->result->current();
         if(!$result instanceof $this->hydrator) {
-            $result = new $this->hydrator($result);
-            $this->result[$this->key()] = $result;
+            $result = new $this->hydrator(['attributes' => $result]);
         }
         return $result;
     }
     
     function key() {
-        return key($this->result);
+        return $this->result->key();
     }
     
     function next() {
-        next($this->result);
+        return $this->result->next();
     }
 
     function rewind() {
-        rewind($this->result);
+        return $this->result->rewind();
     }
 
     function valid() {
-        return is_array($this->result);
+        return $this->result->valid();
     }
 }
 

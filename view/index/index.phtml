@@ -1,3 +1,14 @@
 <?php
 
-var_dump($page);
+echo $this->html->open('pre');
+	var_dump($page);
+echo $this->html->close('pre');
+
+echo $this->html->open('pre');
+	var_dump($pages);
+echo $this->html->close('pre');
+
+foreach($pages as $page) {
+	echo $this->html->tag('hr');
+	echo $this->html->a('#', [], '#' . $page->id());
+}
