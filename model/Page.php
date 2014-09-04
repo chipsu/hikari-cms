@@ -3,10 +3,11 @@
 namespace hikari\cms\model;
 
 class Page extends Model {
-    static function attributes() {
-        return array_merge(parent::attributes(), [
+    static function attributesMap() {
+        return array_merge(parent::attributesMap(), [
         	'title' => 'String',
-            'parent' => [],
+            'parent' => ['Reference'],
         ]);
     }
 }
+ 

@@ -3,7 +3,7 @@
 namespace hikari\cms\model;
 
 class User extends Content {
-    function attributes() {
+    function attributesMap() {
         return [
             'email',
         ];

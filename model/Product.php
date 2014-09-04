@@ -3,7 +3,7 @@
 namespace hikari\cms\model;
 
 class Product extends Content {
-    function attributes() {
+    function attributesMap() {
         return [
             'article_number',
         ];

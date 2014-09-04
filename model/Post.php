@@ -3,7 +3,7 @@
 namespace hikari\cms\model;
 
 class Post extends Content {
-    function attributes() {
+    function attributesMap() {
         return [
             'content',
         ];
