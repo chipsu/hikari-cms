@@ -10,7 +10,8 @@ echo $this->html->close('pre');
 
 foreach($pages as $page) {
 	echo $this->html->tag('hr');
-	echo $this->html->a('#', [], '#' . $page->id());
+	echo $this->html->a($this->url('page', ['action' => 'read', 'id' => (string)$page->id()]), [], $page->id());
+	echo $this->html->a($this->url('page', ['action' => 'remove', 'id' => (string)$page->id()]), ['class' => 'button'], 'Delete');
 }
 
 #$page->delete();

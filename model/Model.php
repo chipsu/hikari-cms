@@ -155,6 +155,7 @@ class ModelBase extends \hikari\component\Component {
 
     static function one($query, array $options = []) {
         $query = static::query($query);
+        $query = static::serializeAttributes($query);
         $result = static::table()->findOne($query);
         if($result && !empty($options['hydrator'])) {
             $result = new static(['attributes' => $result]);
@@ -164,6 +165,7 @@ class ModelBase extends \hikari\component\Component {
 
     static function find($query, array $options = []) {
         $query = static::query($query);
+        $query = static::serializeAttributes($query);
         $result = static::table()->find($query);
         if(!empty($options['hydrator'])) {
             return new HydratorIterator([
@@ -226,6 +228,14 @@ class ModelBase extends \hikari\component\Component {
         return $value;
     }
 
+    protected static function serializeAttributes(array $attributes) {
+        $result = [];
+        foreach($attributes as $key => $value) {
+            $result[$key] = $value instanceof Attribute ? $value->serialize() : $value;
+        }
+        return $result;
+    }
+
     function __construct(array $properties = []) {
         parent::__construct($properties);
         $this->initialize();
@@ -258,11 +268,7 @@ class ModelBase extends \hikari\component\Component {
     function save(array $options = []) {
         $noevents = !empty($options['noevents']);
         if($noevents || $this->beforeSave()) {
-            $attributes = array();
-
-            foreach($this->attributes as $key => $value) {
-                $attributes[$key] = $value instanceof Attribute ? $value->serialize() : $value;
-            }
+            $attributes = static::serializeAttributes($this->attributes);
 
             static::table()->insert($attributes);
 
