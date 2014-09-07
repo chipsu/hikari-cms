@@ -11,35 +11,97 @@ class Attribute {
         $this->options = $options;
     }
 
+    function value() {
+        return $this->value;   
+    }
+
     function serialize() {
         return $this->value;
     }
 
+    function option($key, $default = null) {
+        return isset($this->options[$key]) ? $this->options[$key] : $default;
+    }
+
     function __toString() {
-        return (string)$this->value;
+        try {
+            return (string)$this->value();
+        } catch(\Exception $ex) {
+            var_dump($ex);
+            die;
+        }
     }
 }
 
 class Id extends Attribute {
 
+    static function base_convert($string, $frombase, $tobase) {
+        if(function_exists('gmp_strval')) {
+            return gmp_strval(gmp_init((string)$string, $frombase), $tobase);
+        }
+
+        $string = trim($string);
+
+        if(intval($frombase) != 10) {
+            $len = strlen($string);
+            $q = 0;
+            for ($i=0; $i<$len; $i++) {
+                $r = base_convert($string[$i], $frombase, 10);
+                $q = bcadd(bcmul($q, $frombase), $r);
+            }
+        } else {
+            $q = $string;
+        }
+
+        if(intval($tobase) != 10) {
+            $s = '';
+            while (bccomp($q, '0', 0) > 0) {
+                $r = intval(bcmod($q, $tobase));
+                $s = base_convert($r, 10, $tobase) . $s;
+                $q = bcdiv($q, $tobase, 0);
+            }
+        } else {
+            $s = $q;
+        }
+
+        return $s;
+    }
+
+    static function pack($id) {
+        $result = static::base_convert($id, 16, 36);
+        return strlen($result) < 24 ? $result : $id;
+    }
+
+    static function unpack($id) {
+        return static::base_convert($id, 36, 16);
+    }
+
+    function value() {
+        if($this->option('pack')) {
+            return static::pack($this->value);
+        }
+        return $this->value;
+    }
 
     function serialize() {
-        if($this->value === null && !empty($this->options['null'])) {
+        $value = $this->value;
+        if($value === null && $this->option('null')) {
             return null;
         }
-        return $this->value ? new \MongoId($this->value) : new \MongoId;
+        return $value ? new \MongoId(strlen($value) != 24 ? static::unpack($value) : $value) : new \MongoId;
     }
 }
 
 class Date extends Attribute {
 
     function serialize() {
-        if($this->value instanceof \DateTime) {
-            $date = $this->value->getTimestamp();
-        } else if(is_numeric($this->value)) {
-            $date = $this->value;
-        } else if(is_string($this->value)) {
-            $date = strtotime($this->value);
+        $value = $this->value();
+        if($value instanceof \DateTime) {
+            $date = $value->getTimestamp();
+        } else if(is_numeric($value)) {
+            $date = $value;
+        } else if(is_string($value)) {
+            $date = strtotime($value);
         } else {
             //\hikari\exception\Argument::raise('Unsupported date type %s', gettype($this->value));
             return null;
@@ -53,6 +115,10 @@ class String extends Attribute {
 }
 
 class Integer extends Attribute {
+
+    function value() {
+        return $this->value !== null ? (int)$this->value : null;
+    }
 }
 
 // TODO: array
@@ -195,7 +261,7 @@ class ModelBase extends \hikari\component\Component {
 
     static function attributesMap() {
         return [
-            '_id' => ['Id'],
+            '_id' => ['Id', 'pack' => true],
         ];
     }
 
@@ -248,6 +314,18 @@ class ModelBase extends \hikari\component\Component {
 
     function id() {
         return $this->get('_id');
+    }
+
+    function packId() {
+        $id = $this->id();
+        if($id->options('pack')) {
+            return $id;
+        }
+        return Id::pack($this->id());
+    }
+
+    function encryptId() {
+        return base64_encode(EncryptedId::encrypt($this->id()));
     }
 
     function get($key, $default = null) {
