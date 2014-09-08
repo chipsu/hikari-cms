@@ -345,28 +345,39 @@ class ModelBase extends \hikari\component\Component {
 
     function save(array $options = []) {
         $noevents = !empty($options['noevents']);
-        if($noevents || $this->beforeSave()) {
+        if($noevents || $this->beforeSave($options)) {
             $attributes = static::serializeAttributes($this->attributes);
 
             static::table()->insert($attributes);
 
             if(!$noevents) {
-                $this->afterSave();
+                $this->afterSave($options, $attributes);
             }
         }
     }
 
-    function delete() {
-        static::table()->remove([
-            '_id' => $this->id()->serialize(),
-        ]);
+    function delete(array $options = []) {
+        $noevents = !empty($options['noevents']);
+        if($noevents || $this->beforeDelete($options)) {
+            static::table()->remove([
+                '_id' => $this->id()->serialize(),
+            ]);
+            $this->afterDelete($options);
+        }
     }
 
-    function beforeSave() {
+    function beforeSave(array $options) {
         return true;
     }
 
-    function afterSave() {
+    function afterSave(array $options, array $attributes) {
+    }
+
+    function beforeDelete(array $options) {
+        return true;
+    }
+
+    function afterDelete(array $options) {
     }
 
     function __set($key, $value) {
@@ -400,13 +411,13 @@ class Model extends ModelBase {
         ]);
     }
 
-    function beforeSave() {
+    function beforeSave(array $options) {
         $now = new Date('NOW');
         if(!$this->created) {
             $this->created = $now;
         }
         $this->updated = $now;
-        return parent::beforeSave();
+        return parent::beforeSave($options);
     }
 
 }
