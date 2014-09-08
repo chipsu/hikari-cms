@@ -44,48 +44,6 @@ trait ModelRestTrait {
     }
 }
 
-interface CrudInterface {
-    function create();
-    function read();
-    function update();
-    function remove();
-    static function modelClassName();
-}
-
-trait CrudTrait {
-    use ModelTrait;
-
-    function create() {
-        $class = static::modelClassName();
-        $model = new $class;
-        $model->save();
-        var_dump($model);
-    }
-
-    function read() {
-        $class = static::modelClassName();
-        $model = $class::one($this->request->get('id'));
-        var_dump($model);
-    }
-
-    function update() {
-        $class = static::modelClassName();
-        $model = $class::one($this->request->get('id'));
-        $model->attributes($this->request->data);
-        if($model->validate()) {
-            $model->save();
-        }
-        var_dump($model);
-    }
-
-    function remove() {
-        $class = static::modelClassName();
-        $model = $class::one($this->request->get('id'));
-        $model->delete();
-        var_dump($model);
-    }
-}
-
 class Content extends \hikari\controller\Controller implements RestInterface {
     use ModelRestTrait, CrudTrait {
         ModelRestTrait::modelClassName insteadof CrudTrait;
