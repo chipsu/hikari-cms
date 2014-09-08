@@ -28,12 +28,6 @@ trait RestTrait {
 
 }
 
-trait ModelTrait {
-    static function modelClassName() {
-        return str_replace('\\controller\\', '\\model\\', get_called_class());
-    }
-}
-
 trait ModelRestTrait {
     use RestTrait, ModelTrait;
 
@@ -60,13 +54,6 @@ class Admin extends \hikari\controller\Controller implements RestInterface, Crud
     ];
 
     function index() {
-        $Content = '\hikari\cms\controller\Content';
-        var_dump($Content::modelClassName());
-        $c = new Content;
-        #$c->get();
-        $c->create();
-        die;
-
         # hmm
         # - create a list of all Rest controllers that are enabled
         # - ... stuff appears automagically 
@@ -75,7 +62,6 @@ class Admin extends \hikari\controller\Controller implements RestInterface, Crud
             'title' => 'Admin', 'icon' => 'fa-icon', 'route' => ['index', []],
             'menu' => [
                 [ 'title' => 'Dashboard', 'icon' => 'fa-icon', 'route' => ['index', []], ],
-                [ 'title' => 'Pages', 'icon' => 'fa-icon', 'route' => ['index', []], ],
                 [ 'title' => 'Posts', 'icon' => 'fa-icon', 'route' => ['index', []], ],
                 [
                     'title' => 'Webshop', 'icon' => 'fa-icon', 'route' => ['index', []],
