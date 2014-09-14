@@ -1,9 +1,39 @@
-poopedmypants
-
-<?php
-
-echo $this->component('menu')->render($this, $menu, []);
-
-echo $this->content;
-
-?>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title><?=$this->encode($title)?></title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="<?=$this->asset->url('style/main.json')?>">
+</head>
+<body>
+    <header>
+        <nav class="horizontal mobile">
+            <ul>
+                <li><a href="#" data-hui-touchmenu="#mainmenu"><i class="fa fa-fw fa-ellipsis-v"></i></a></li>
+                <li><a href="<?=$this->url('index')?>">Admin</a></li>
+                <li><a href="#"><i class="fa fa-fw fa-heart loading-indicator"></i></a></li>
+            </ul>
+        </nav>
+    </header>
+    <div role="main">
+        <div class="container">
+            <div class="span-4">
+                <?php echo $this->component('menu')->render($this, $menu, ['nav' => ['id' => 'admin-menu', 'class' => 'menu vertical', 'data-hui-touchmenu-id' => 'touchmenu'], 'ul']); ?>
+            </div>
+            <div class="span-8">
+                <?php echo $this->content; ?>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <nav class="horizontal">
+            <ul>
+                <li><a href="<?=$this->url('bitbucket')?>">Hikari Framework</a></li>
+                <li><a href="http://placekitten.com/">Powered by {placekitten}</a></li>
+            </ul>
+        </nav>
+    </footer>
+    <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="<?=$this->asset->url('script/main.json')?>" async></script>
+</body>
+</html>
