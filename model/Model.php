@@ -495,6 +495,17 @@ Page
 #####
 
 Page : Content container, contains zero or more Posts, has child Pages
-Content : Post (Text Content), Product, User, Group
+Content : Post (Text Content), Product, User, Group'
+
+v2:
+
+Post : Data
+    name (seo)
+    PostID parent
+
+Page : Post
+    String layout
+    Post[] content
+
 
 */
