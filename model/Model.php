@@ -500,8 +500,26 @@ Content : Post (Text Content), Product, User, Group'
 v2:
 
 Post : Data
-    name (seo)
+    name (seo) # defaults to classname/title or null if title = null
+    title
     PostID parent
+    Tag[] tags
+
+Media : Post
+User : Post
+Product : Post
+Price : Data
+    price
+    vat
+    currency
+OrderRow : Data
+    ProductID product
+    Integer quantity
+    Price price
+    function updatePrice()
+        this.price = product.getPrice(user.currency)
+Order : Post
+    OrderRow rows
 
 Page : Post
     String layout

@@ -64,6 +64,7 @@ class Admin extends \hikari\controller\Controller implements RestInterface, Crud
                 [ 'title' => 'Dashboard', 'icon' => 'fa-icon', 'route' => ['admin', []], ],
                 [ 'title' => 'Pages', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'page']], ],
                 [ 'title' => 'Posts', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'post']], ],
+                [ 'title' => 'Media', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'media']], ],
                 [
                     'title' => 'Webshop', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'webshop']],
                     'items' => [
