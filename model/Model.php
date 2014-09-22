@@ -526,4 +526,8 @@ Page : Post
     Post[] content
 
 
+IMPORTANT:
+
+use Models as Attributes? (for attributeMap)
+
 */
