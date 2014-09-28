@@ -33,8 +33,13 @@ trait ModelRestTrait {
 
     function get() {
         $class = static::modelClassName();
-        $model = $class::one($this->request->get('id'));
-        var_dump($model);
+        if($id = $this->request->get('id')) {
+            $result = $class::one($this->request->get('id'));
+            var_dump($result);
+        } else {
+            $result = $class::find();
+            var_dump($result);
+        }
     }
 }
 
@@ -62,8 +67,8 @@ class Admin extends \hikari\controller\Controller implements RestInterface, Crud
             'title' => 'Admin',
             'menu' => [
                 [ 'title' => 'Dashboard', 'icon' => 'fa-icon', 'route' => ['admin', []], ],
-                [ 'title' => 'Pages', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'page']], ],
-                [ 'title' => 'Posts', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'post']], ],
+                [ 'title' => 'Pages', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'page', 'action' => 'read']], ],
+                [ 'title' => 'Posts', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'read']], ],
                 [ 'title' => 'Media', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'media']], ],
                 [
                     'title' => 'Webshop', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'webshop']],

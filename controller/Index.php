@@ -7,14 +7,17 @@ use hikari\controller\Controller;
 class Index extends Controller {
 
     function index() {
-    	$page = new \hikari\cms\model\Page;
-    	$page->title = 'Testing';
-    	$page->save();
-        $page = \hikari\cms\model\Page::one([
+    	$post = \hikari\cms\model\Post::create();
+        $post->name = 'index';
+    	$post->title = 'Testing';
+        $post->content = \hikari\cms\model\Page::create();
+    	$post->save();
+        $post = \hikari\cms\model\Post::one([
             'name' => $this->request->request('page', 'index'),
+            'content.type' => \hikari\cms\model\Page::tableName(),
         ], ['hydrator' => true]);
-        $pages = \hikari\cms\model\Page::find([], ['hydrator' => true]);
-        return ['title' => 'hello!', 'page' => $page, 'pages' => $pages];
+        $posts = \hikari\cms\model\Post::find(['content.type' => \hikari\cms\model\Page::tableName()], ['hydrator' => true]);
+        return ['title' => 'hello!', 'page' => $post, 'pages' => $posts];
     }
 
     function view($id) {

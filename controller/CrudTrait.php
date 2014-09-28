@@ -5,6 +5,7 @@ namespace hikari\cms\controller;
 trait CrudTrait {
     use ModelTrait;
 
+    // if numeric array: batch create
     function create() {
         $class = static::modelClassName();
         $model = new $class;
@@ -14,15 +15,19 @@ trait CrudTrait {
 
     function read() {
         $class = static::modelClassName();
-        $model = $class::one($this->request->get('id'), ['hydrator' => true]);
-        if(!$model) {
-        	\hikari\exception\Http::raise(404);
+        $query = $this->requestQuery();
+        if(!empty($query['_id'])) {
+            $result = $class::one($query, ['hydrator' => true]);
+            if(!$result) {
+            	\hikari\exception\Http::raise(404);
+            }
+        } else {
+            $result = $class::find($query, ['hydrator' => true]);
         }
-        var_dump($model);
-        die;
-        return ['model' => $model];
+        return ['title' => 'read', 'result' => $result];
     }
 
+    // if numeric array: batch update
     function update() {
         $class = static::modelClassName();
         $model = $class::one($this->request->get('id'), ['hydrator' => true]);
@@ -33,6 +38,7 @@ trait CrudTrait {
         var_dump($model);
     }
 
+    // if numeric array: batch delete
     function dispose() {
         $class = static::modelClassName();
         $model = $class::one($this->request->get('id'), ['hydrator' => true]);
@@ -41,5 +47,13 @@ trait CrudTrait {
         }
         $model->delete();
         header('Location: ' . $_SERVER['HTTP_REFERER']);
+    }
+
+    protected function requestQuery() {
+        $query = array(
+            '_id' => $this->request->get('id'),
+            //'data.type' => $this->request->get('type'),
+        );
+        return array_filter($query, function($item) { return $item !== null; });
     }
 }

@@ -2,7 +2,13 @@
 
 namespace hikari\cms\model;
 
-class Attribute {
+interface AttributeInterface {
+    function value();
+    function serialize();
+    function __toString();
+}
+
+class Attribute implements AttributeInterface {
     public $value;
     public $options;
 
@@ -172,7 +178,7 @@ class Reference extends Id {
  $post->created = 'NOW';
  ---
  model::get($key)
-    if not $this->attributes[$key] instanceof Attribute
+    if not $this->attributes[$key] instanceof AttributeInterface
         $this->attributes[$key] = new static::$attributes[$key]($value)
 
  model::save()
@@ -191,10 +197,25 @@ class Reference extends Id {
 
 */
 
-class ModelBase extends \hikari\component\Component {
+class ModelBase extends \hikari\component\Component implements AttributeInterface {
     public $attributes;
     static $db;
     static $client;
+
+    ///
+    function value() {
+        return $this->attributes;
+    }
+
+    function serialize() {
+        return static::serializeAttributes($this->attributes);
+    }
+
+    function __toString() {
+        return get_class($this);
+    }
+
+    ///
 
     static function client() {
         if(static::$client === null) {
@@ -219,7 +240,7 @@ class ModelBase extends \hikari\component\Component {
         return str_replace('\\', '_', get_called_class());
     }
 
-    static function one($query, array $options = []) {
+    static function one($query = [], array $options = []) {
         $query = static::query($query);
         $query = static::serializeAttributes($query);
         $result = static::table()->findOne($query);
@@ -229,7 +250,7 @@ class ModelBase extends \hikari\component\Component {
         return $result;
     }
 
-    static function find($query, array $options = []) {
+    static function find($query = [], array $options = []) {
         $query = static::query($query);
         $query = static::serializeAttributes($query);
         $result = static::table()->find($query);
@@ -243,11 +264,11 @@ class ModelBase extends \hikari\component\Component {
        return $result;
     }
 
-    static function query($query) {
+    static function query($query, $createAttributes = true) {
         if(!is_array($query)) {
             $query = ['_id' => $query];
         }
-        return static::createAttributes($query, false);
+        return $createAttributes ? static::createAttributes($query, false) : $query;
     }
 
     static function create(array $attributes = [], array $options = []) {
@@ -286,18 +307,29 @@ class ModelBase extends \hikari\component\Component {
         if($class[0] != '\\') {
             $class = __NAMESPACE__ . '\\' . $class;
         }
-        if(!$value instanceof Attribute) {
+        if(!$value instanceof AttributeInterface) {
+            if($value === null) {
+                if(!empty($options['null'])) {
+                    return null;
+                }
+                if(!empty($options['default'])) {
+                    $value = $options['default'];
+                }
+            }
             $value = new $class($value, $options);
         }
-        $value->options['model'] = get_called_class();
-        $value->options['class'] = $class;
+        // FIXME!
+        if($value instanceof Attribute) {
+            $value->options['model'] = get_called_class();
+            $value->options['class'] = $class;
+        }
         return $value;
     }
 
     protected static function serializeAttributes(array $attributes) {
         $result = [];
         foreach($attributes as $key => $value) {
-            $result[$key] = $value instanceof Attribute ? $value->serialize() : $value;
+            $result[$key] = $value instanceof AttributeInterface ? $value->serialize() : $value;
         }
         return $result;
     }
@@ -333,10 +365,10 @@ class ModelBase extends \hikari\component\Component {
     }
 
     function set($key, $value) {
-        if(!$value instanceof Attribute) {
+        if(!$value instanceof AttributeInterface) {
             $map = static::attributesMap();
             if(!isset($map[$key])) {
-                \hikari\exception\Argument::raise('The property %s does not exist on this object', $key);
+                \hikari\exception\Argument::raise('The property %s does not exist on this object (%s)', $key, get_class($this));
             }
             $value = static::createAttribute($key, $value, $map[$key]);
         }
@@ -346,7 +378,7 @@ class ModelBase extends \hikari\component\Component {
     function save(array $options = []) {
         $noevents = !empty($options['noevents']);
         if($noevents || $this->beforeSave($options)) {
-            $attributes = static::serializeAttributes($this->attributes);
+            $attributes = $this->serialize();
 
             static::table()->insert($attributes);
 
@@ -526,8 +558,38 @@ Page : Post
     Post[] content
 
 
+v3
+
+Post extends Data:
+    Data Content (Page, Product, User, Etc)
+    PostID Parent
+    Tag[ ] Tags
+
+Page extends Data
+Product extends Data
+
 IMPORTANT:
 
-use Models as Attributes? (for attributeMap)
+! use Models as Attributes? (for attributeMap)
+    both need a clean base interface (lightweight component?)
+
+! setting content for Posts might be confusing?
+    helper methods for Post class
+
+! post.type
+    use short classname?
+
+! auto post.content
+    set editor fields in model attributeMap?
+
+! Crud::Create vs Model::Create, rename one
+
+! Post.content is not hydrated into the correct class. need dynamic attribute type
+    overload Content::create and use $class::create in createAttributes? (instead of new $class):
+        Content::create($attr) {
+            $class = $attr.type;
+            ...
+        }
+! Post.content cannot be set with Post::create(['content' => []])
 
 */

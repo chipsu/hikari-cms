@@ -1,7 +1,7 @@
 <?php
 
 echo $this->html->open('pre');
-	var_dump($page);
+	#var_dump($page);
 echo $this->html->close('pre');
 
 echo $this->html->open('pre');
@@ -10,9 +10,9 @@ echo $this->html->close('pre');
 
 foreach($pages as $page) {
 	echo $this->html->tag('hr');
-	echo $this->html->a($this->url('page', ['action' => 'read', 'id' => (string)$page->id()]), [], $page->id());
+	echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$page->id()]), [], $page->id());
 	echo ' | ';
-	echo $this->html->a($this->url('page', ['action' => 'dispose', 'id' => (string)$page->id()]), ['class' => 'button'], 'Delete');
+	echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$page->id()]), ['class' => 'button'], 'Delete');
 }
 
 #$page->delete();
