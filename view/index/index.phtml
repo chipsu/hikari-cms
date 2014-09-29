@@ -1,27 +1,20 @@
 <?php
 
-$data = [
-    'name' => 'index',
-    'title' => 'Testing',
-    'content' => [
-        'class' => \hikari\cms\model\Page::className(),
-    ],
-];
-echo $this->html->a($this->url('post', ['action' => 'create', 'data' => $data]), ['class' => 'button'], 'Create');
+use hikari\cms\model\Page;
 
-echo $this->html->open('pre');
-	#var_dump($page);
-echo $this->html->close('pre');
+echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post', ['action' => 'create', 'data' => $data])]);
+    echo $this->html->text('data[name]', ['label' => 'Name'], 'index');
+    echo '<br>';
+    echo $this->html->textarea('data[description]', ['label' => 'Description'], 'description');
+    echo '<br>';
+    echo $this->html->text('data[content][class]', ['label' => 'Class'], Page::className());
+    echo '<br>';
+    echo $this->html->submit('Create');
+echo $this->html->open('close');
 
-echo $this->html->open('pre');
-	var_dump($pages);
-echo $this->html->close('pre');
-
-foreach($pages as $page) {
+foreach($posts as $post) {
 	echo $this->html->tag('hr');
-	echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$page->id()]), [], $page->id());
+	echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$post->id()]), [], $post->id());
 	echo ' | ';
-	echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$page->id()]), ['class' => 'button'], 'Delete');
+	echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$post->id()]), ['class' => 'button'], 'Delete');
 }
-
-#$page->delete();

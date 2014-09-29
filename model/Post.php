@@ -2,7 +2,7 @@
 
 namespace hikari\cms\model;
 
-class Post extends Content {
+class Post extends Model {
     use HistoryTrait {
         HistoryTrait::beforeSave as HistoryTrait_beforeSave;
     }
