@@ -8,9 +8,9 @@ trait CrudTrait {
     // if numeric array: batch create
     function create() {
         $class = static::modelClassName();
-        $model = new $class;
+        $model = $class::create($_GET['data']);
         $model->save();
-        var_dump($model);
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 
     function read() {

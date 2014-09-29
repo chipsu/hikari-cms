@@ -2,37 +2,6 @@
 
 namespace hikari\cms\model;
 
-// TODO: ShadowTable (for drafts & other stuff)
-trait HistoryTrait {
-    
-    static function historyTable() {
-        $tableName = static::historyTableName();
-        return static::db()->{$tableName};
-    }
-
-    static function historyTableName() {
-        return static::tableName() . '_history';
-    }
-
-    function storeHistory(array $options) {
-        if($data = static::one($this->id())) {
-            $item = [
-                'data' => $data,
-            ];
-            static::historyTable()->insert($item);
-        }
-        return true;
-    }
-
-    function beforeSave(array $options) {
-        return parent::beforeSave($options) && $this->storeHistory($options);
-    }
-
-    function beforeDelete(array $options) {
-        return parent::beforeDelete($options) && $this->storeHistory($options);
-    }
-}
-
 class Post extends Content {
     use HistoryTrait {
         HistoryTrait::beforeSave as HistoryTrait_beforeSave;
@@ -45,6 +14,23 @@ class Post extends Content {
             'content' => ['Content', 'null' => true],
         ]);
     }
+
+    /*static function tableName() {
+        var_dump(str_replace('\\', '_', __CLASS__));die;
+        return str_replace('\\', '_', __CLASS__);
+    }
+
+    static function normalizeQuery($query) {
+        $query = parent::normalizeQuery($query);
+        if(get_called_class() != __CLASS__) {
+            $query['content']['class'] = get_called_class();
+        }
+        return $query;
+    }
+
+    static function postType() {
+        return get_called_class();
+    }*/
 
     function beforeSave(array $options) {
         return $this->HistoryTrait_beforeSave($options);

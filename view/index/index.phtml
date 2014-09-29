@@ -1,5 +1,14 @@
 <?php
 
+$data = [
+    'name' => 'index',
+    'title' => 'Testing',
+    'content' => [
+        'class' => \hikari\cms\model\Page::className(),
+    ],
+];
+echo $this->html->a($this->url('post', ['action' => 'create', 'data' => $data]), ['class' => 'button'], 'Create');
+
 echo $this->html->open('pre');
 	#var_dump($page);
 echo $this->html->close('pre');
