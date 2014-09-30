@@ -181,6 +181,10 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
         return base64_encode(EncryptedId::encrypt($this->id()));
     }
 
+    function has($key) {
+        return array_key_exists($this->attributes, $key);
+    }
+
     function get($key, $default = null) {
         return isset($this->attributes[$key]) ? $this->attributes[$key] : $default;
     }

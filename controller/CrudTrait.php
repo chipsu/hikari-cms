@@ -7,14 +7,14 @@ trait CrudTrait {
 
     // if numeric array: batch create
     function create() {
-        $class = static::modelClassName();
+        $class = $this->modelClassName();
         $model = $class::create($_REQUEST['data']);
         $model->save();
         header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 
     function read() {
-        $class = static::modelClassName();
+        $class = $this->modelClassName();
         $query = $this->requestQuery();
         if(!empty($query['_id'])) {
             $result = $class::one($query, ['hydrator' => true]);
@@ -29,7 +29,7 @@ trait CrudTrait {
 
     // if numeric array: batch update
     function update() {
-        $class = static::modelClassName();
+        $class = $this->modelClassName();
         $model = $class::one($this->request->get('id'), ['hydrator' => true]);
         $model->attributes($this->request->data);
         if($model->validate()) {
@@ -40,7 +40,7 @@ trait CrudTrait {
 
     // if numeric array: batch delete
     function dispose() {
-        $class = static::modelClassName();
+        $class = $this->modelClassName();
         $model = $class::one($this->request->get('id'), ['hydrator' => true]);
         if(!$model) {
         	\hikari\exception\Http::raise(404);

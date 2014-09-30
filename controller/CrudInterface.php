@@ -7,5 +7,5 @@ interface CrudInterface {
     function read();
     function update();
     function dispose();
-    static function modelClassName();
+    function modelClassName();
 }

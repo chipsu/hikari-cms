@@ -1,13 +1,21 @@
 <?php
 
-echo '<pre>';
 
-var_dump($result->content);
-var_dump($result);
-echo '</pre>';
+if($result instanceof \Traversable) {
+    foreach($result as $post) {
+        echo $this->html->tag('hr');
+        echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$post->id()]), [], $post->id());
+        echo ' | ';
+        echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$post->id()]), ['class' => 'button'], 'Delete');
+    }
 
-if(is_array($result)) {
 
 } else {
 
+    echo '<pre>';
+
+    if($result->has('content'))
+        var_dump($result->content);
+    var_dump($result);
+    echo '</pre>';
 }

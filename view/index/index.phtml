@@ -2,7 +2,7 @@
 
 use hikari\cms\model\Page;
 
-echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post', ['action' => 'create', 'data' => $data])]);
+echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post', ['action' => 'create'])]);
     echo $this->html->text('data[name]', ['label' => 'Name'], 'index');
     echo '<br>';
     echo $this->html->textarea('data[description]', ['label' => 'Description'], 'description');
@@ -12,9 +12,4 @@ echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post
     echo $this->html->submit('Create');
 echo $this->html->open('close');
 
-foreach($posts as $post) {
-	echo $this->html->tag('hr');
-	echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$post->id()]), [], $post->id());
-	echo ' | ';
-	echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$post->id()]), ['class' => 'button'], 'Delete');
-}
+echo $this->view('post/read', ['result' => $posts]);

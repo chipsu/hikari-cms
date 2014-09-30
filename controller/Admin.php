@@ -49,6 +49,10 @@ class Content extends \hikari\controller\Controller implements RestInterface {
     }
 }
 
+// do we need this?
+// admin interface is really just a different set of views (ie detail listview instead of grid for most things)
+// Dashboard => Controller
+// Root controllers checks if is_admin and adds the admin overlay and/or layout
 class Admin extends \hikari\controller\Controller implements RestInterface, CrudInterface {
     use RestTrait, CrudTrait;
 
@@ -58,37 +62,49 @@ class Admin extends \hikari\controller\Controller implements RestInterface, Crud
         ],
     ];
 
+    function modelClassName() {
+        return 'hikari\\cms\\model\\' . ucfirst($this->request->get('class'));
+    }
+
     function index() {
         # hmm
         # - create a list of all Rest controllers that are enabled
-        # - ... stuff appears automagically 
+        # - ... stuff appears automagically
         # - admin.coffee
         return [
             'title' => 'Admin',
-            'menu' => [
-                [ 'title' => 'Dashboard', 'icon' => 'fa-icon', 'route' => ['admin', []], ],
-                [ 'title' => 'Pages', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'page', 'action' => 'read']], ],
-                [ 'title' => 'Posts', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'read']], ],
-                [ 'title' => 'Media', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'media']], ],
-                [
-                    'title' => 'Webshop', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'webshop']],
-                    'items' => [
-                        [ 'title' => 'Products', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'list', 'type' => 'product']], ],
-                        [ 'title' => 'Orders', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'list', 'type' => 'order']], ],
-                    ],
-                ],
-                [
-                    'title' => 'Accounts', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'accounts']],
-                    'items' => [
-                        [ 'title' => 'Groups', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'groups']], ],
-                        [ 'title' => 'Users', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'users']], ],
-                    ],
-                ],
-                [ 'title' => 'Account', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'account']], ],
-                [ 'title' => 'System', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'system']], ],
-                [ 'title' => 'Notes', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'notes']], ],
-                [ 'title' => 'Help', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'help']], ],
-            ],
         ];
+    }
+
+    protected function beforeRender() {
+        // temp fix
+        if($this->action->id != 'index') {
+            $this->viewFile = 'post/' . $this->action->id;
+        }
+        $this->view->data['menu'] = [
+            [ 'title' => 'Dashboard', 'icon' => 'fa-icon', 'route' => ['admin', []], ],
+            [ 'title' => 'Pages', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'page', 'action' => 'read']], ],
+            [ 'title' => 'Posts', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'read']], ],
+            [ 'title' => 'Media', 'icon' => 'fa-icon', 'route' => ['admin', ['type' => 'media']], ],
+            [
+                'title' => 'Webshop', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'webshop']],
+                'items' => [
+                    [ 'title' => 'Products', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'list', 'type' => 'product']], ],
+                    [ 'title' => 'Orders', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'list', 'type' => 'order']], ],
+                ],
+            ],
+            [
+                'title' => 'Accounts', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'accounts']],
+                'items' => [
+                    [ 'title' => 'Groups', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'groups']], ],
+                    [ 'title' => 'Users', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'users']], ],
+                ],
+            ],
+            [ 'title' => 'Account', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'account']], ],
+            [ 'title' => 'System', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'system']], ],
+            [ 'title' => 'Notes', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'notes']], ],
+            [ 'title' => 'Help', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'help']], ],
+        ];
+        return parent::beforeRender();
     }
 }
