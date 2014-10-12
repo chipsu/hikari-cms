@@ -7,6 +7,10 @@ if($result instanceof \Traversable) {
         echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$post->id()]), [], $post->id());
         echo ' | ';
         echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$post->id()]), ['class' => 'button'], 'Delete');
+        if($content = $post->get('content')) {
+            echo ' | ';
+            echo $content->get('class', 'null');
+        }
     }
 
 
@@ -14,8 +18,9 @@ if($result instanceof \Traversable) {
 
     echo '<pre>';
 
-    if($result->has('content'))
+    if($result->has('content')) {
         var_dump($result->content);
+    }
     var_dump($result);
     echo '</pre>';
 }

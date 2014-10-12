@@ -1,0 +1,107 @@
+
+User
+Group
+Product
+
+Data:
+    Created
+    Updated
+    UserData
+
+MetaData(Data):
+    ...
+
+Price(MetaData):
+    currency: SEK
+    value: 34543
+    pricelist: ID (category or tag on Data?)
+
+Content(Data):
+    String description
+    Page page (??? primary)
+    Page[] pages (secondary)
+    Tag[] tags (for filtering and organisation)
+    parent? (product groups, packages ...)
+
+Product(Content):
+    String articleNumber: "1324-3"
+    Price[] prices
+
+Post(Content):
+    ...
+
+Page
+    name
+    uuid
+    PageID parent
+    PageID[] lineage
+    layout
+    Content[] content: (uuid?)
+        Product product
+#####
+
+Page : Content container, contains zero or more Posts, has child Pages
+Content : Post (Text Content), Product, User, Group'
+
+v2:
+
+Post : Data
+    name (seo) # defaults to classname/title or null if title = null
+    title
+    PostID parent
+    Tag[] tags
+
+Media : Post
+User : Post
+Product : Post
+Price : Data
+    price
+    vat
+    currency
+OrderRow : Data
+    ProductID product
+    Integer quantity
+    Price price
+    function updatePrice()
+        this.price = product.getPrice(user.currency)
+Order : Post
+    OrderRow rows
+
+Page : Post
+    String layout
+    Post[] content
+
+
+v3
+
+Post extends Data:
+    Data Content (Page, Product, User, Etc)
+    PostID Parent
+    Tag[ ] Tags
+
+Page extends Data
+Product extends Data
+
+IMPORTANT:
+
+! use Models as Attributes? (for attributeMap)
+    both need a clean base interface (lightweight component?)
+
+! setting content for Posts might be confusing?
+    helper methods for Post class
+
+! post.type
+    use short classname?
+
+! auto post.content
+    set editor fields in model attributeMap?
+
+! Crud::Create vs Model::Create, rename one
+
+! Post.content is not hydrated into the correct class. need dynamic attribute type
+    overload Content::create and use $class::create in createAttributes? (instead of new $class):
+        Content::create($attr) {
+            $class = $attr.type;
+            ...
+        }
+! Post.content cannot be set with Post::create(['content' => []])

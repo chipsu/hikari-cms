@@ -182,7 +182,7 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
     }
 
     function has($key) {
-        return array_key_exists($this->attributes, $key);
+        return is_array($this->attributes) && array_key_exists($key, $this->attributes);
     }
 
     function get($key, $default = null) {
