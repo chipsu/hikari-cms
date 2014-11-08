@@ -16,13 +16,18 @@ trait CrudTrait {
     function read() {
         $class = $this->modelClassName();
         $query = $this->requestQuery();
-        if(!empty($query['_id'])) {
-            $result = $class::one($query, ['hydrator' => true]);
-            if(!$result) {
-            	\hikari\exception\Http::raise(404);
-            }
-        } else {
-            $result = $class::find($query, ['hydrator' => true]);
+        #if(!empty($query['_id'])) {
+        #    $result = $class::one($query, ['hydrator' => true]);
+        #    if(!$result) {
+        #        \hikari\exception\Http::raise(404);
+        #    }
+        #} else {
+        #    $result = $class::find($query, ['hydrator' => true]);
+        #}
+        #    $result = $class::one($query, ['hydrator' => true]);
+        $result = $class::find($query, ['hydrator' => true]);
+        if(!$result && !empty($query['_id'])) {
+            \hikari\exception\Http::raise(404);
         }
         return ['title' => 'read', 'result' => $result];
     }
