@@ -2,15 +2,17 @@
 
 namespace hikari\cms\controller;
 
+use \hikari\core\Server;
+
 trait CrudTrait {
     use ModelTrait;
 
     // if numeric array: batch create
     function create() {
         $class = $this->modelClassName();
-        $model = $class::create($_REQUEST['data']);
+        $model = $class::create($this->request->post('data'));
         $model->save();
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        header('Location: ' . Server::referer());
     }
 
     function read() {
@@ -51,7 +53,7 @@ trait CrudTrait {
         	\hikari\exception\Http::raise(404);
         }
         $model->delete();
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        header('Location: ' . Server::referer());
     }
 
     protected function requestQuery() {
