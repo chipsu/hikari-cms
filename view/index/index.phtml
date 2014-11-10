@@ -9,7 +9,7 @@ echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post
     echo '<br>';
     echo $this->html->text('data[content][class]', ['label' => 'Class'], Page::className());
     echo '<br>';
-    echo $this->html->submit('Create');
+    echo $this->html->tag('button', [], $this->html->tag('i', ['class' => 'fa fa-fw fa-plus']) . ' Create');
 echo $this->html->open('close');
 
 echo $this->view('post/read', ['result' => $posts]);

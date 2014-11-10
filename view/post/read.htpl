@@ -24,8 +24,34 @@ h1#po-o.po_o \
             #    %var_dump($value)
             li @id=($value.id())
                 # todo: we should not have comma here
-                a href=($api.concat("/read/", $value.id()))
-                    %$api.encode($value.id())
+                #a href=($api.concat("/read/", $value.id()))
+                # should be:
+                #a href=($api.url('post' action='read' id=$value.id()))
+                a href=($this.url('post', ['action'=>'read', 'id'=>$value.id()]))
+                    span
+                        %$api.encode($value.name)
+                    span
+                        " "
+                    span
+                        %$api.encode($value.id())
+                button class="left"
+                    "Edit"
+                ul class="dropdown"
+                    li
+                        button class="button secondary right"
+                            i class="fa fa-angle-down"
+                        ul class="dropdown-menu"
+                            li
+                                a href="#"
+                                    i class="fa fa-fw fa-copy"
+                                    span
+                                        "Copy"
+                            li
+                                a href=($this.url('post', ['action'=>'dispose', 'id'=>$value.id()]))
+                                    i class="fa fa-fw fa-trash-o"
+                                    span
+                                        "Delete"
+                br
 %else
     div.empty @poo="oop"
         "Poo"
