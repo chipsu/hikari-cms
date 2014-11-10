@@ -2,7 +2,7 @@
 
 namespace hikari\cms\model;
 
-class Product extends Post {
+class Product extends Content {
 
     function attributesMap() {
         return [

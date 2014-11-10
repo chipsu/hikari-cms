@@ -2,7 +2,7 @@
 
 namespace hikari\cms\model;
 
-class Order extends Post {
+class Order extends Content {
 
     static function attributesMap() {
         return array_merge(parent::attributesMap(), [

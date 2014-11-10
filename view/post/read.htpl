@@ -18,7 +18,7 @@ h1#po-o.po_o \
         h1
             "Hello"
     # fixme: @prefix=[a=2 b=3 c=3.5]
-    ul#poo class="list" &menu-id="poo" @rand=(rand() % 10)
+    ul#poo.list &menu-id="poo" @rand=(rand() % 10)
         %for $key $value in $result
             #pre
             #    %var_dump($value)
@@ -37,19 +37,19 @@ h1#po-o.po_o \
                 button.left type="button"
                     a
                         "Edit"
-                ul.dropdown
+                ul.dropdown.right
                     li
                         button.secondary.right type="button"
-                            i class="fa fa-angle-down"
-                        ul class="dropdown-menu"
+                            i.fa.fa-angle-down
+                        ul.dropdown-menu
                             li
                                 a href="#"
-                                    i class="fa fa-fw fa-copy"
+                                    i.fa.fa-fw.fa-copy
                                     span
                                         "Copy"
                             li
                                 a href=($this.url('post', ['action'=>'dispose', 'id'=>$value.id()]))
-                                    i class="fa fa-fw fa-trash-o"
+                                    i.fa.fa-fw.fa-trash-o
                                     span
                                         "Delete"
                 br
