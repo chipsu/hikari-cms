@@ -34,11 +34,12 @@ h1#po-o.po_o \
                         " "
                     span
                         %$api.encode($value.id())
-                button class="left"
-                    "Edit"
-                ul class="dropdown"
+                button.left type="button"
+                    a
+                        "Edit"
+                ul.dropdown
                     li
-                        button class="button secondary right"
+                        button.secondary.right type="button"
                             i class="fa fa-angle-down"
                         ul class="dropdown-menu"
                             li
