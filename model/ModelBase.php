@@ -5,6 +5,7 @@ namespace hikari\cms\model;
 class ModelBase extends \hikari\component\Component implements ModelInterface, AttributeInterface {
     public $attributes;
     public $errors;
+    public $exists;
     static $db;
     static $client;
 
@@ -162,12 +163,17 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
     }
 
     function initialize() {
+        $this->exists = isset($this->attributes['_id']);
         $this->attributes = static::createAttributes($this->attributes === null ? [] : $this->attributes);
         parent::initialize();
     }
 
     function id() {
         return $this->get('_id');
+    }
+
+    function exists() {
+        return $this->exists;
     }
 
     function packId() {
@@ -214,7 +220,9 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
         if($noevents || $this->beforeSave($options)) {
             $attributes = $this->serialize();
 
-            static::table()->insert($attributes);
+            static::table()->save($attributes);
+
+            $this->exists = true;
 
             if(!$noevents) {
                 $this->afterSave($options, $attributes);

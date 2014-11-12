@@ -1,8 +1,12 @@
 <?php
 
+var_dump($model->exists());
 var_dump($model->errors);
 
 echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post', ['action' => 'create'])]);
+    if($model->exists()) {
+        echo $this->html->hidden('data[_id]', [], (string)$model->id());
+    }
     echo $this->html->text('data[name]', ['label' => 'Name'], (string)$model->name);
     echo '<br>';
     echo $this->html->text('data[title]', ['label' => 'Title'], (string)$model->title);

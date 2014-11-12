@@ -16,6 +16,7 @@ interface ModelInterface {
     static function attributeMap();
     static function className();
     function id();
+    function exists();
     function attributes();
     function labels();
     function has($key);
