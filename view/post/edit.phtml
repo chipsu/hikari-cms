@@ -1,0 +1,15 @@
+<?php
+
+var_dump($model->errors);
+
+echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post', ['action' => 'create'])]);
+    echo $this->html->text('data[name]', ['label' => 'Name'], (string)$model->name);
+    echo '<br>';
+    echo $this->html->text('data[title]', ['label' => 'Title'], (string)$model->title);
+    echo '<br>';
+    echo $this->html->textarea('data[content][description]', ['label' => 'Description'], $model->content ? (string)$model->content->description : '');
+    echo '<br>';
+    echo $this->html->text('data[content][class]', ['label' => 'Class'], $model->content ? $model->content->className() : \hikari\cms\model\Page::className());
+    echo '<br>';
+    echo $this->html->tag('button', [], $this->html->tag('i', ['class' => 'fa fa-fw fa-plus']) . ' ' . ucfirst($this->controller->action->id));
+echo $this->html->open('close');

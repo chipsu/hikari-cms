@@ -34,9 +34,8 @@ h1#po-o.po_o \
                         " "
                     span
                         %$api.encode($value.id())
-                button.left type="button"
-                    a
-                        "Edit"
+                a.button.left href=($this.url('post', ['action'=>'update', 'id'=>$value.id()]))
+                    "Edit"
                 ul.dropdown.right
                     li
                         button.secondary.right type="button"

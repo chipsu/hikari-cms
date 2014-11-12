@@ -13,6 +13,15 @@ interface ModelInterface {
     //static function normalizeQuery($query);
     static function create(array $attributes = [], array $options = []);
     //static function filter();
-    static function attributesMap();
+    static function attributeMap();
     static function className();
+    function id();
+    function attributes();
+    function labels();
+    function has($key);
+    function get($key, $default = null);
+    function set($key, $value);
+    function save(array $options = []);
+    function delete(array $options = []);
+    function validate(array $options = []);
 }

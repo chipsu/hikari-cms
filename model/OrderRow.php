@@ -4,8 +4,8 @@ namespace hikari\cms\model;
 
 class OrderRow extends Model {
 
-    static function attributesMap() {
-        return array_merge(parent::attributesMap(), [
+    static function attributeMap() {
+        return array_merge(parent::attributeMap(), [
             'total' => ['Integer'],
             'quantity' => ['Integer', 'minValue' => 0],
             'price' => ['Price'],

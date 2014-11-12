@@ -9,10 +9,18 @@ trait CrudTrait {
 
     // if numeric array: batch create
     function create() {
+        $model = null;
         $class = $this->modelClassName();
-        $model = $class::create($this->request->post('data'));
-        $model->save();
-        header('Location: ' . Server::referer());
+        if($data = $this->request->post('data')) {
+            $model = $class::create($data);
+            if($model->validate()) {
+                $model->save();
+                header('Location: ' . Server::referer());
+                die;
+            }
+        }
+        $this->viewFile = 'post/edit';
+        return ['title' => __METHOD__, 'model' => $model ? $model : $class::create()];
     }
 
     function read() {
@@ -31,18 +39,27 @@ trait CrudTrait {
         if(!$result && !empty($query['_id'])) {
             \hikari\exception\Http::raise(404);
         }
-        return ['title' => 'read', 'result' => $result];
+        return ['title' => __METHOD__, 'result' => $result];
     }
 
     // if numeric array: batch update
     function update() {
         $class = $this->modelClassName();
-        $model = $class::one($this->request->get('id'), ['hydrator' => true]);
-        $model->attributes($this->request->data);
-        if($model->validate()) {
-            $model->save();
+        $query = $this->requestQuery();
+        $model = $class::one($query, ['hydrator' => true]);
+        if(!$model) {
+            \hikari\exception\Http::raise(404);
         }
-        var_dump($model);
+        if($data = $this->request->post('data')) {
+            $model->attributes($this->request->data);
+            if($model->validate()) {
+                $model->save();
+                header('Location: ' . Server::referer());
+                die;
+            }
+        }
+        $this->viewFile = 'post/edit';
+        return ['title' => __METHOD__, 'model' => $model];
     }
 
     // if numeric array: batch delete
@@ -54,6 +71,7 @@ trait CrudTrait {
         }
         $model->delete();
         header('Location: ' . Server::referer());
+        die;
     }
 
     protected function requestQuery() {

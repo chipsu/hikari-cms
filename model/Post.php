@@ -7,10 +7,10 @@ class Post extends Model {
         HistoryTrait::beforeSave as HistoryTrait_beforeSave;
     }
 
-    static function attributesMap() {
-        return array_merge(parent::attributesMap(), [
-            'name' => ['String', 'maxlength' => 255],
-            'title' => ['String', 'maxlength' => 255],
+    static function attributeMap() {
+        return array_merge(parent::attributeMap(), [
+            'name' => ['String', 'minlength' => 1, 'maxlength' => 50],
+            'title' => ['String', 'maxlength' => 100],
             'content' => ['Content', 'null' => true],
         ]);
     }

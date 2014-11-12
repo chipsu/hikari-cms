@@ -10,8 +10,8 @@ class Model extends ModelBase {
     /// end
 
 
-    static function attributesMap() {
-        return array_merge(parent::attributesMap(), [
+    static function attributeMap() {
+        return array_merge(parent::attributeMap(), [
             'created' => 'Date',
             'updated' => 'Date',
         ]);

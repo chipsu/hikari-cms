@@ -12,4 +12,6 @@ echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post
     echo $this->html->tag('button', [], $this->html->tag('i', ['class' => 'fa fa-fw fa-plus']) . ' Create');
 echo $this->html->open('close');
 
+echo $this->html->a($this->url('post', ['action' => 'create']));
+
 echo $this->view('post/read', ['result' => $posts]);

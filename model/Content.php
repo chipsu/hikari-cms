@@ -4,8 +4,8 @@ namespace hikari\cms\model;
 
 class Content extends Model {
 
-    static function attributesMap() {
-        return array_merge(parent::attributesMap(), [
+    static function attributeMap() {
+        return array_merge(parent::attributeMap(), [
             'class' => ['String', 'maxlength' => 255, 'default' => static::className()],
             'description' => ['String', 'maxlength' => 65535],
             'tags' => ['String', 'type' => 'Array'],

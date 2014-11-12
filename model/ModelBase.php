@@ -4,6 +4,7 @@ namespace hikari\cms\model;
 
 class ModelBase extends \hikari\component\Component implements ModelInterface, AttributeInterface {
     public $attributes;
+    public $errors;
     static $db;
     static $client;
 
@@ -90,14 +91,14 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
         // TODO: scopes?
     }
 
-    static function attributesMap() {
+    static function attributeMap() {
         return [
             '_id' => ['Id', 'pack' => true],
         ];
     }
 
     protected static function createAttributes(array $attributes = [], $empty = true) {
-        foreach(static::attributesMap() as $key => $options) {
+        foreach(static::attributeMap() as $key => $options) {
             if(!array_key_exists($key, $attributes)) {
                 if(!$empty) {
                     continue;
@@ -181,6 +182,14 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
         return base64_encode(EncryptedId::encrypt($this->id()));
     }
 
+    function attributes() {
+        return $this->attributes;
+    }
+
+    function labels() {
+        return [];
+    }
+
     function has($key) {
         return is_array($this->attributes) && array_key_exists($key, $this->attributes);
     }
@@ -191,7 +200,7 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
 
     function set($key, $value) {
         if(!$value instanceof AttributeInterface) {
-            $map = static::attributesMap();
+            $map = static::attributeMap();
             if(!isset($map[$key])) {
                 \hikari\exception\Argument::raise('The property %s does not exist on this object (%s)', $key, get_class($this));
             }
@@ -223,18 +232,36 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
         }
     }
 
-    function beforeSave(array $options) {
+    function validate(array $options = []) {
+        $noevents = !empty($options['noevents']);
+        $this->errors = [];
+        if($noevents || $this->beforeValidate($options)) {
+            $validator = new validation\Validator(['model' => $this]);
+            $this->errors = $validator->run();
+            $this->afterValidate($options);
+        }
+        return empty($this->errors);
+    }
+
+    protected function beforeSave(array $options) {
         return true;
     }
 
-    function afterSave(array $options, array $attributes) {
+    protected function afterSave(array $options, array $attributes) {
     }
 
-    function beforeDelete(array $options) {
+    protected function beforeDelete(array $options) {
         return true;
     }
 
-    function afterDelete(array $options) {
+    protected function afterDelete(array $options) {
+    }
+
+    protected function beforeValidate(array $options) {
+        return true;
+    }
+
+    protected function afterValidate(array $options) {
     }
 
     function __set($key, $value) {

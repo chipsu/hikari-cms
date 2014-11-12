@@ -4,9 +4,9 @@ namespace hikari\cms\model;
 
 class Order extends Content {
 
-    static function attributesMap() {
-        return array_merge(parent::attributesMap(), [
-            'total' => ['Integer', 'minValue' => 0],
+    static function attributeMap() {
+        return array_merge(parent::attributeMap(), [
+            'total' => ['Integer', 'min' => 0],
             'rows' => ['OrderRow', 'array' => true],
         ]);
     }
