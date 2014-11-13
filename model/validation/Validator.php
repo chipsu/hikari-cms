@@ -3,6 +3,7 @@
 namespace hikari\cms\model\validation;
 
 use hikari\exception\Argument as ArgumentException;
+use hikari\cms\model\ModelInterface;
 
 class Validator extends \hikari\component\Component {
     public $model;
@@ -15,6 +16,13 @@ class Validator extends \hikari\component\Component {
         $map = $this->model->attributeMap();
         $attributes = $this->model->attributes();
         foreach($map as $attribute => $data) {
+            $value = isset($attributes[$attribute]) ? $attributes[$attribute] : null;
+            if($value instanceof ModelInterface) {
+                if(!$value->validate()) {
+                    $this->errors[$attribute] = $value->errors;
+                }
+                continue;
+            }
             if(!is_array($data)) {
                 continue;
             }
@@ -23,7 +31,7 @@ class Validator extends \hikari\component\Component {
                 $method = 'validate' . ucfirst($name);
                 if(method_exists($this, $method)) {
                     $args = $this->normalizeArgs($args);
-                    $this->$method($class, $attribute, isset($attributes[$attribute]) ? $attributes[$attribute] : null, $name, $args);
+                    $this->$method($class, $attribute, $value, $name, $args);
                 }
             }
         }
