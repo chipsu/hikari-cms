@@ -105,3 +105,57 @@ IMPORTANT:
             ...
         }
 ! Post.content cannot be set with Post::create(['content' => []])
+
+v4 (like current but content moved up to object):
+Content : Data
+Post : Content
+    String class
+    ref<Post> parent
+    Tag tags[]
+    func dynamicClass()     # all subclasses use the Post db table
+    func editor()
+Product : Post
+Order : Post
+
+# A page is also a post
+Page : Post
+   String layout
+   ###ref<Post> primary      # primary - or is the Page itself the primary Post?
+   ref<Post> content[]    # layout areas - { left: <id>, top: <id>, right: [ <id>... ] }
+   # or
+   # PostFeed feed?
+
+# alt Page content
+PageContent : Data
+    Array: query        # { _id: <id> } or { parent: <id> } - limit depends on the layout, publish status and other conditions should be added automatically
+
+# grid - flexible content grid
+GridItem
+    func itemCount()
+    # might want to override the widths, ex: left side bar should always be 100%
+    style: {
+        desktop: {
+            width: 50%
+        }
+        mobile: {
+            width: 100%
+        }
+        tablet {
+            display: none
+        }
+    }
+    query: { # see pagecontent query
+        lineage: contains $webshopRoot
+        _order: published desc
+        _limit
+    }
+    Post content: {
+        "static content"
+    }
+
+Grid : PageContent?
+    Int pageSize
+    Bool pager
+    GridItem items[]
+
+

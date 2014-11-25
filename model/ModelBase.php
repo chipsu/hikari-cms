@@ -84,7 +84,7 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
     }
 
     static function create(array $attributes = [], array $options = []) {
-        $class = get_called_class();
+        $class = static::dynamicClass($attributes);
         return new $class(array_merge($options, ['attributes' => $attributes]));
     }
 

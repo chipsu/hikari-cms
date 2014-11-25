@@ -1,13 +1,11 @@
 <?php
 
-use hikari\cms\model\Page;
-
 echo $this->html->open('form', ['method' => 'post', 'action' => $this->url('post', ['action' => 'create'])]);
     echo $this->html->text('data[name]', ['label' => 'Name'], 'index');
     echo '<br>';
     echo $this->html->textarea('data[description]', ['label' => 'Description'], 'description');
     echo '<br>';
-    echo $this->html->text('data[content][class]', ['label' => 'Class'], Page::className());
+    echo $this->html->text('data[class]', ['label' => 'Class'], $this->controller->modelClassName());
     echo '<br>';
     echo $this->html->tag('button', [], $this->html->tag('i', ['class' => 'fa fa-fw fa-plus']) . ' Create');
 echo $this->html->open('close');
