@@ -2,12 +2,11 @@
 
 namespace hikari\cms\controller;
 
-use hikari\controller\Controller;
+use hikari\controller\Crud;
 use hikari\cms\model\Post as PostModel;
 use hikari\cms\model\Page as PageModel;
 
-class Post extends Controller implements CrudInterface {
-    use CrudTrait;
+class Post extends Crud {
 
     // This should not be here, move back to Index and fetch start page.
     function index() {
@@ -19,6 +18,6 @@ class Post extends Controller implements CrudInterface {
             'name' => $this->request->request('name', 'index'),
         ], $query), ['hydrator' => true]);
         $posts = PostModel::find($query, ['hydrator' => true]);
-        return ['title' => 'hello!', 'post' => $post, 'posts' => $posts];
+        return ['title' => (string)$post->title, 'post' => $post, 'posts' => $posts];
     }
 }

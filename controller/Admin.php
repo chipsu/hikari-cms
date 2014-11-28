@@ -2,69 +2,13 @@
 
 namespace hikari\cms\controller;
 
-interface RestInterface {
-    function get();
-    function put();
-    function post();
-    function delete();
-}
-
-trait RestTrait {
-    function get() {
-        \hikari\exception\NotSupported::raise();
-    }
-
-    function put() {
-        \hikari\exception\NotSupported::raise();
-    }
-
-    function post() {
-        \hikari\exception\NotSupported::raise();
-    }
-
-    function delete() {
-        \hikari\exception\NotSupported::raise();
-    }
-
-}
-
-trait ModelRestTrait {
-    use RestTrait, ModelTrait;
-
-    function get() {
-        $class = static::modelClassName();
-        if($id = $this->request->get('id')) {
-            $result = $class::one($this->request->get('id'));
-            var_dump($result);
-        } else {
-            $result = $class::find();
-            var_dump($result);
-        }
-    }
-}
-
-class Content extends \hikari\controller\Controller implements RestInterface {
-    use ModelRestTrait, CrudTrait {
-        ModelRestTrait::modelClassName insteadof CrudTrait;
-    }
-}
-
-// do we need this?
-// admin interface is really just a different set of views (ie detail listview instead of grid for most things)
-// Dashboard => Controller
-// Root controllers checks if is_admin and adds the admin overlay and/or layout
-class Admin extends \hikari\controller\Controller implements RestInterface, CrudInterface {
-    use RestTrait, CrudTrait;
+class Admin extends \hikari\controller\Controller {
 
     public $componentProperties = [
         'view' => [
             'layout' => 'admin',
         ],
     ];
-
-    function modelClassName() {
-        return 'hikari\\cms\\model\\' . ucfirst($this->request->get('class'));
-    }
 
     function index() {
         # hmm
