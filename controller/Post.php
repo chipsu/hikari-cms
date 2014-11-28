@@ -10,6 +10,7 @@ class Post extends Crud {
 
     // This should not be here, move back to Index and fetch start page.
     function index() {
+        $this->component('router');
         $query = [];
         if(get_called_class() != __CLASS__) {
             $query['class'] = $this->modelClassName();
@@ -18,6 +19,12 @@ class Post extends Crud {
             'name' => $this->request->request('name', 'index'),
         ], $query), ['hydrator' => true]);
         $posts = PostModel::find($query, ['hydrator' => true]);
-        return ['title' => (string)$post->title, 'post' => $post, 'posts' => $posts];
+        return [
+            'title' => (string)$post->title,
+            'post' => $post,
+            'route' => (string)$this->router->build($this->id, ['action' => $this->action->id]),
+            'model' => PostModel::create(),
+            'result' => $posts,
+        ];
     }
 }

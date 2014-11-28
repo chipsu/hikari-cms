@@ -1,0 +1,32 @@
+#pre
+#    %var_dump($value)
+li @id=($value.id())
+  # todo: we should not have comma here
+  #a href=($api.concat("/read/", $value.id()))
+  # should be:
+  #a href=($api.url('post' action='read' id=$value.id()))
+  a href=($this.url('post', ['action'=>'read', 'id'=>$value.id()]))
+    span
+      %$api.encode($value.name)
+    span
+      " "
+    span
+      %$api.encode($value.id())
+  a.button.left href=($this.url('post', ['action'=>'update', 'id'=>$value.id()]))
+    "Edit"
+  ul.dropdown.right
+    li
+      button.secondary.right type="button"
+        i.fa.fa-angle-down
+      ul.dropdown-menu
+        li
+          a href="#"
+            i.fa.fa-fw.fa-copy
+            span
+              "Copy"
+        li
+          a href=($this.url('post', ['action'=>'dispose', 'id'=>$value.id()]))
+            i.fa.fa-fw.fa-trash-o
+            span
+              "Delete"
+  br

@@ -12,4 +12,4 @@ echo $this->html->open('close');
 
 echo $this->html->a($this->url('post', ['action' => 'create']));
 
-echo $this->view('post/read', ['result' => $posts]);
+echo $this->view('post/read', ['route' => $route, 'model' => $model, 'result' => $result]);

@@ -1,57 +1,26 @@
 div#po-o
-    "dsfsadfs"
+  "dsfsadfs"
 div.po-o
-    "dsfsadfs"
+  "dsfsadfs"
 h1#po-o.po_o \
-    @poo-id="poop" \
-    @poopy-poo=3 poopoo-poo=3.45 \
-    string="string \"with 'quotes' inside" \
-    fnutts='singlefnutts " string \' "adfasdf' \
-    &poo="Popasdfasdf" "moo"="muuu"
-    "Poop"
+  @poo-id="poop" \
+  @poopy-poo=3 poopoo-poo=3.45 \
+  string="string \"with 'quotes' inside" \
+  fnutts='singlefnutts " string \' "adfasdf' \
+  &poo="Popasdfasdf" "moo"="muuu"
+  "Poop"
 #h2.doesnotwork \
 #    adsf=["array" "w(i)th" "s[tuf]]f"] \
 #    $variable=(stuff() + poop()) \$poo=("Poo") \
 #    $variable=["array" "w(i)th" "s[tuf]]f"]
 %if $result
-    header $attr
-        h1
-            "Hello"
-    # fixme: @prefix=[a=2 b=3 c=3.5]
-    ul#poo.list &menu-id="poo" @rand=(rand() % 10)
-        %for $key $value in $result
-            #pre
-            #    %var_dump($value)
-            li @id=($value.id())
-                # todo: we should not have comma here
-                #a href=($api.concat("/read/", $value.id()))
-                # should be:
-                #a href=($api.url('post' action='read' id=$value.id()))
-                a href=($this.url('post', ['action'=>'read', 'id'=>$value.id()]))
-                    span
-                        %$api.encode($value.name)
-                    span
-                        " "
-                    span
-                        %$api.encode($value.id())
-                a.button.left href=($this.url('post', ['action'=>'update', 'id'=>$value.id()]))
-                    "Edit"
-                ul.dropdown.right
-                    li
-                        button.secondary.right type="button"
-                            i.fa.fa-angle-down
-                        ul.dropdown-menu
-                            li
-                                a href="#"
-                                    i.fa.fa-fw.fa-copy
-                                    span
-                                        "Copy"
-                            li
-                                a href=($this.url('post', ['action'=>'dispose', 'id'=>$value.id()]))
-                                    i.fa.fa-fw.fa-trash-o
-                                    span
-                                        "Delete"
-                br
+  header $attr
+    h1
+      "Hello"
+  # fixme: @prefix=[a=2 b=3 c=3.5]
+  ul.list &data=$route &data-view="post/item"
+    %for $key $value in $result
+      %$this.view("post/item", ['value' => $value])
 %else
-    div.empty @poo="oop"
-        "Poo"
+  div.empty @poo="oop"
+    "Poo"
