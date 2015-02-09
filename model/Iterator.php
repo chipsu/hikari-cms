@@ -2,7 +2,9 @@
 
 namespace hikari\cms\model;
 
-class Iterator extends \hikari\component\Component implements \Iterator {
+use \hikari\core\Component;
+
+class Iterator extends Component implements \Iterator {
     public $result;
     public $hydrator;
     public $options;
@@ -14,11 +16,11 @@ class Iterator extends \hikari\component\Component implements \Iterator {
         }
         return $result;
     }
-    
+
     function key() {
         return $this->result->key();
     }
-    
+
     function next() {
         return $this->result->next();
     }

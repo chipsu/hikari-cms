@@ -10,7 +10,6 @@ class Post extends Crud {
 
     // This should not be here, move back to Index and fetch start page.
     function index() {
-        $this->component('router');
         $query = [];
         if(get_called_class() != __CLASS__) {
             $query['class'] = $this->modelClassName();

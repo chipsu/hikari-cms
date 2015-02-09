@@ -2,7 +2,9 @@
 
 namespace hikari\cms\model;
 
-class ModelBase extends \hikari\component\Component implements ModelInterface, AttributeInterface {
+use \hikari\core\Component;
+
+class ModelBase extends Component implements ModelInterface, AttributeInterface {
     public $attributes;
     public $errors;
     public $exists;
@@ -159,13 +161,12 @@ class ModelBase extends \hikari\component\Component implements ModelInterface, A
 
     function __construct(array $properties = []) {
         parent::__construct($properties);
-        $this->initialize();
     }
 
-    function initialize() {
+    function init() {
         $this->exists = isset($this->attributes['_id']);
         $this->attributes = static::createAttributes($this->attributes === null ? [] : $this->attributes);
-        parent::initialize();
+        parent::init();
     }
 
     function id() {
