@@ -12,7 +12,7 @@ class Attribute implements AttributeInterface {
     }
 
     function value() {
-        return $this->value;   
+        return $this->value;
     }
 
     function serialize() {

@@ -8,7 +8,7 @@ class Reference extends Id {
 
     function serialize() {
         if($this->reference) {
-            $id = $this->reference->id();
+            $id = $this->reference->getId();
             if($id instanceof Id) {
                 $this->value = $id->value;
             }

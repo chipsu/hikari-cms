@@ -4,7 +4,7 @@ namespace hikari\cms\model;
 
 // TODO: ShadowTable (for drafts & other stuff)
 trait HistoryTrait {
-    
+
     static function historyTable() {
         $tableName = static::historyTableName();
         return static::db()->{$tableName};
@@ -15,7 +15,7 @@ trait HistoryTrait {
     }
 
     function storeHistory(array $options) {
-        if($data = static::one($this->id())) {
+        if($data = static::one($this->getId())) {
             $item = [
                 'data' => $data,
             ];

@@ -169,7 +169,7 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
         parent::init();
     }
 
-    function id() {
+    function getId() {
         return $this->get('_id');
     }
 
@@ -177,16 +177,16 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
         return $this->exists;
     }
 
-    function packId() {
-        $id = $this->id();
+    function getShortId() {
+        $id = $this->getId();
         if($id->options('pack')) {
             return $id;
         }
-        return Id::pack($this->id());
+        return new Id(Id::pack($id), ['pack' => true]);
     }
 
-    function encryptId() {
-        return base64_encode(EncryptedId::encrypt($this->id()));
+    function getEncryptedId() {
+        return base64_encode(EncryptedId::encrypt($this->getId()));
     }
 
     function attributes() {
@@ -235,7 +235,7 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
         $noevents = !empty($options['noevents']);
         if($noevents || $this->beforeDelete($options)) {
             static::table()->remove([
-                '_id' => $this->id()->serialize(),
+                '_id' => $this->getId()->serialize(),
             ]);
             $this->afterDelete($options);
         }
@@ -274,17 +274,23 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
     }
 
     function __set($key, $value) {
-        $this->set($key, $value);
+        if(array_key_exists($key, $this->attributes)) {
+            return $this->set($key, $value);
+        }
+        return parent::__set($key);
     }
 
     function __get($key) {
         if(array_key_exists($key, $this->attributes)) {
             return $this->get($key);
         }
-        \hikari\exception\Argument::raise('The property %s does not exist on this object', $key);
+        return parent::__get($key);
     }
 
     function __unset($key) {
-        $this->set($key, null);
+        if(array_key_exists($key, $this->attributes)) {
+            return $this->set($key, null);
+        }
+        return parent::__unset($key);
     }
 }

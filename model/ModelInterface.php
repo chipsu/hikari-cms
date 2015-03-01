@@ -15,7 +15,7 @@ interface ModelInterface {
     //static function filter();
     static function attributeMap();
     static function className();
-    function id();
+    function getId();
     function exists();
     function attributes();
     function labels();

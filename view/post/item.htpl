@@ -1,18 +1,18 @@
 #pre
 #    %var_dump($value)
-li @id=($value.id())
+li @id=((string)$value.id)
   # todo: we should not have comma here
   #a href=($api.concat("/read/", $value.id()))
   # should be:
   #a href=($api.url('post' action='read' id=$value.id()))
-  a href=($this.url('post', ['action'=>'read', 'id'=>$value.id()]))
+  a href=($this.url('post', ['action'=>'read', 'id'=>(string)$value.id]))
     span
       %$api.encode($value.name)
     span
       " "
     span
-      %$api.encode($value.id())
-  a.button.left href=($this.url('post', ['action'=>'update', 'id'=>$value.id()]))
+      %$api.encode((string)$value.id)
+  a.button.left href=($this.url('post', ['action'=>'update', 'id'=>(string)$value.id]))
     "Edit"
   ul.dropdown.right
     li
@@ -25,7 +25,7 @@ li @id=($value.id())
             span
               "Copy"
         li
-          a href=($this.url('post', ['action'=>'dispose', 'id'=>$value.id()]))
+          a href=($this.url('post', ['action'=>'dispose', 'id'=>(string)$value.id]))
             i.fa.fa-fw.fa-trash-o
             span
               "Delete"

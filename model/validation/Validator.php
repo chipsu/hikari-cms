@@ -5,7 +5,7 @@ namespace hikari\cms\model\validation;
 use hikari\exception\Argument as ArgumentException;
 use hikari\cms\model\ModelInterface;
 
-class Validator extends \hikari\component\Component {
+class Validator extends \hikari\core\Component {
     public $model;
     public $labels;
     public $errors;

@@ -4,9 +4,9 @@
 if($result instanceof \Traversable) {
     foreach($result as $post) {
         echo $this->html->tag('hr');
-        echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$post->id()]), [], $post->id());
+        echo $this->html->a($this->url('post', ['action' => 'read', 'id' => (string)$post->id]), [], $post->id);
         echo ' | ';
-        echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$post->id()]), ['class' => 'button'], 'Delete');
+        echo $this->html->a($this->url('post', ['action' => 'dispose', 'id' => (string)$post->id]), ['class' => 'button'], 'Delete');
         if($content = $post->get('content')) {
             echo ' | ';
             echo $content->get('class', 'null');
