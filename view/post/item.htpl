@@ -12,11 +12,11 @@ li @id=((string)$value.id)
       " "
     span
       %$api.encode((string)$value.id)
-  a.button.left href=($this.url('post', ['action'=>'update', 'id'=>(string)$value.id]))
+  a.button.left href=($this.url('post', ['action'=>'update', 'id'=>(string)$value.id])) &resource=($this.url('rest', ['class'=>'post', 'id'=>(string)$value.id]))
     "Edit"
   ul.dropdown.right
     li
-      button.secondary.right type="button"
+      a.button.secondary.right type="button"
         i.fa.fa-angle-down
       ul.dropdown-menu
         li
@@ -25,8 +25,12 @@ li @id=((string)$value.id)
             span
               "Copy"
         li
+          a href="#"
+            i.fa.fa-fw.fa-copy
+            span
+              "Convert"
+        li
           a href=($this.url('post', ['action'=>'dispose', 'id'=>(string)$value.id]))
             i.fa.fa-fw.fa-trash-o
             span
               "Delete"
-  br
