@@ -18,7 +18,7 @@
     <div role="main">
         <div class="container">
             <div class="span-4">
-                <?php echo $this->component('menu')->render($this, $menu, ['nav' => ['id' => 'admin-menu', 'class' => 'menu vertical', 'data-hui-touchmenu-id' => 'touchmenu'], 'ul']); ?>
+                <?php echo $this->controller->getComponent('menu')->render($this, $menu, ['nav' => ['id' => 'admin-menu', 'class' => 'menu vertical', 'data-hui-touchmenu-id' => 'touchmenu'], 'ul']); ?>
             </div>
             <div class="span-8">
                 <?php echo $this->content; ?>

@@ -2,6 +2,13 @@
 
 namespace hikari\cms\controller;
 
+/**
+ * How admin mode works:
+ * - User visits /admin and is promted to login
+ * - A toolbar is added to the layout if user is an Admin
+ * - Admin can toggle between default and site views (wysiwyg and admin mode)
+ * - All routes are the same regardless if the user is an admin or not, just different presentation.
+ */
 class Admin extends \hikari\controller\Controller {
 
     public $componentProperties = [
@@ -15,17 +22,7 @@ class Admin extends \hikari\controller\Controller {
         # - create a list of all Rest controllers that are enabled
         # - ... stuff appears automagically
         # - admin.coffee
-        return [
-            'title' => 'Admin',
-        ];
-    }
-
-    protected function beforeRender() {
-        // temp fix
-        if($this->action->id != 'index') {
-            $this->viewFile = 'post/' . $this->action->id;
-        }
-        $this->view->data['menu'] = [
+        $menu = [
             [ 'title' => 'Dashboard', 'icon' => 'fa-icon', 'route' => ['admin', []], ],
             [ 'title' => 'Pages', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'page', 'action' => 'read']], ],
             [ 'title' => 'Posts', 'icon' => 'fa-icon', 'route' => ['admin', ['class' => 'post', 'action' => 'read']], ],
@@ -49,6 +46,9 @@ class Admin extends \hikari\controller\Controller {
             [ 'title' => 'Notes', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'notes']], ],
             [ 'title' => 'Help', 'icon' => 'fa-icon', 'route' => ['admin', ['action' => 'help']], ],
         ];
-        return parent::beforeRender();
+        return [
+            'title' => 'Admin',
+            'menu' => $menu,
+        ];
     }
 }
