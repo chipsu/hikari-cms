@@ -17,7 +17,6 @@ interface ModelInterface {
     static function className();
     function getId();
     function exists();
-    function attributes();
     function labels();
     function has($key);
     function get($key, $default = null);

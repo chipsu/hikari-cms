@@ -11,6 +11,9 @@ class Content extends Model {
             //'page' => ['Reference', 'to' => 'Page'],
             //'pages' => ['Reference', 'to' => 'Page'],
             'parent' => ['Reference', 'to' => 'Content'],
+            //
+            'type' => ['String', 'maxlength' => 255],
+            'layout' => ['String', 'maxlength' => 255],
         ]);
     }
 }

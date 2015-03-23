@@ -5,7 +5,7 @@ namespace hikari\cms\model;
 use \hikari\core\Component;
 
 class ModelBase extends Component implements ModelInterface, AttributeInterface {
-    public $attributes;
+    protected $_attributes;
     public $errors;
     public $exists;
     static $db;
@@ -164,8 +164,8 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
     }
 
     function init() {
-        $this->exists = isset($this->attributes['_id']);
-        $this->attributes = static::createAttributes($this->attributes === null ? [] : $this->attributes);
+        $this->getAttributes();
+        $this->exists = (bool)$this->getId();
         parent::init();
     }
 
@@ -189,8 +189,15 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
         return base64_encode(EncryptedId::encrypt($this->getId()));
     }
 
-    function attributes() {
-        return $this->attributes;
+    function getAttributes() {
+        if($this->_attributes === null) {
+            $this->_attributes = static::createAttributes();
+        }
+        return $this->_attributes;
+    }
+
+    function setAttributes(array $attributes) {
+        $this->_attributes = static::createAttributes($attributes);
     }
 
     function labels() {
@@ -198,11 +205,11 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
     }
 
     function has($key) {
-        return is_array($this->attributes) && array_key_exists($key, $this->attributes);
+        return is_array($this->_attributes) && array_key_exists($key, $this->_attributes);
     }
 
     function get($key, $default = null) {
-        return isset($this->attributes[$key]) ? $this->attributes[$key] : $default;
+        return isset($this->_attributes[$key]) ? $this->_attributes[$key] : $default;
     }
 
     function set($key, $value) {
@@ -213,7 +220,31 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
             }
             $value = static::createAttribute($key, $value, $map[$key]);
         }
-        $this->attributes[$key] = $value;
+        $this->_attributes[$key] = $value;
+    }
+
+    function __set($key, $value) {
+        $attributes = $this->getAttributes();
+        if(is_array($attributes) && array_key_exists($key, $attributes)) {
+            return $this->set($key, $value);
+        }
+        return parent::__set($key, $value);
+    }
+
+    function __get($key) {
+        $attributes = $this->getAttributes();
+        if(is_array($attributes) && array_key_exists($key, $attributes)) {
+            return $this->get($key);
+        }
+        return parent::__get($key);
+    }
+
+    function __unset($key) {
+        $attributes = $this->getAttributes();
+        if(is_array($attributes) && array_key_exists($key, $attributes)) {
+            return $this->set($key, null);
+        }
+        return parent::__unset($key);
     }
 
     function save(array $options = []) {
@@ -271,26 +302,5 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
     }
 
     protected function afterValidate(array $options) {
-    }
-
-    function __set($key, $value) {
-        if(array_key_exists($key, $this->attributes)) {
-            return $this->set($key, $value);
-        }
-        return parent::__set($key);
-    }
-
-    function __get($key) {
-        if(array_key_exists($key, $this->attributes)) {
-            return $this->get($key);
-        }
-        return parent::__get($key);
-    }
-
-    function __unset($key) {
-        if(array_key_exists($key, $this->attributes)) {
-            return $this->set($key, null);
-        }
-        return parent::__unset($key);
     }
 }

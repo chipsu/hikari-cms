@@ -14,7 +14,7 @@ class Validator extends \hikari\core\Component {
         $this->errors = [];
         $this->labels = $this->model->labels();
         $map = $this->model->attributeMap();
-        $attributes = $this->model->attributes();
+        $attributes = $this->model->getAttributes();
         foreach($map as $attribute => $data) {
             $value = isset($attributes[$attribute]) ? $attributes[$attribute] : null;
             if($value instanceof ModelInterface) {
