@@ -5,7 +5,7 @@ li @id=((string)$value.id)
   #a href=($api.concat("/read/", $value.id()))
   # should be:
   #a href=($api.url('post' action='read' id=$value.id()))
-  a href=($this.url('post', ['action'=>'read', 'id'=>(string)$value.id]))
+  a href=($this.url('post_read', ['id'=>(string)$value.id]))
     span
       %$api.encode($value.name)
     span

@@ -8,11 +8,11 @@ class Index extends Post {
         return Page::modelClassName();
     }
 
-    protected function beforeRender() {
+    public function beforeRender($event) {
         // temp fix: we need paths for views
         #if($this->action->id == 'index') {
         #    $this->viewFile = 'post/' . $this->action->id;
         #}
-        return parent::beforeRender();
+        return parent::beforeRender($event);
     }
 }

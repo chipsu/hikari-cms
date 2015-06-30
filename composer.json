@@ -1,0 +1,15 @@
+{
+  "name": "metrica/hikari-cms-core",
+  "require": {
+    "php": "^5.5.9",
+    "metrica/hikari-lib": "1.0.*"
+  },
+  "suggest": {
+    "metrica/hikari-reset": "1.0.*",
+    "metrica/hikari-js": "1.0.*",
+    "metrica/hikari-cms-admin": "1.0.*",
+    "metrica/hikari-cms-widgets": "1.0.*",
+    "metrica/hikari-cms-webshop": "1.0.*",
+    "metrica/hikari-cms-discussions": "1.0.*"
+  }
+}

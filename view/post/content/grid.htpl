@@ -1,0 +1,7 @@
+div.grid
+  %foreach($rows, $row)
+    div.row
+      %foreach($row.cols, $col)
+        div.col
+          =$col.content
+
