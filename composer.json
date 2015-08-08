@@ -11,5 +11,8 @@
     "metrica/hikari-cms-widgets": "1.0.*",
     "metrica/hikari-cms-webshop": "1.0.*",
     "metrica/hikari-cms-discussions": "1.0.*"
+  },
+  "autoload": {
+    "psr-4": {"hikari\\cms\\": "./"}
   }
 }
