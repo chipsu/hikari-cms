@@ -303,4 +303,8 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
 
     protected function afterValidate(array $options) {
     }
+
+    function toArray() {
+        return $this->value();
+    }
 }
