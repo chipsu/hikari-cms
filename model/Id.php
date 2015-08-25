@@ -46,17 +46,30 @@ class Id extends Attribute {
     }
 
     function value() {
-        if($this->option('pack')) {
-            return static::pack($this->value);
+        if($this->value === null && $this->option('null')) {
+            return null;
+        }
+        if(!$this->value instanceof \MongoId) {
+            if($this->value) {
+                if(strlen($this->value) != 24) {
+                    $this->value = static::unpack($this->value);
+                }
+                $this->value = new \MongoId($this->value);
+            } else {
+                $this->value = new \MongoId;
+            }
         }
         return $this->value;
     }
 
-    function serialize() {
-        $value = $this->value;
-        if($value === null && $this->option('null')) {
-            return null;
+    function serialize(array $options) {
+        $value = $this->value();
+        if(!empty($options['stringify'])) {
+            $value = (string)$value;
+            if($this->option('pack')) {
+                $value = static::pack($this->value);
+            }
         }
-        return $value ? new \MongoId(strlen($value) != 24 ? static::unpack($value) : $value) : new \MongoId;
+        return $value;
     }
 }

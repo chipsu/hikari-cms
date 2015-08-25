@@ -16,8 +16,8 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
         return $this->attributes;
     }
 
-    function serialize() {
-        return static::serializeAttributes($this->attributes);
+    function serialize(array $options) {
+        return static::serializeAttributes($this->attributes, $options);
     }
 
     function __toString() {
@@ -63,6 +63,7 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
         $query = static::query($query);
         $query = static::serializeAttributes($query);
         $result = static::table()->find($query);
+        static::applyCursorOptions($options);
         if(!empty($options['hydrator'])) {
             return new Iterator([
                 'result' => $result,
@@ -71,6 +72,28 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
             ]);
         }
        return $result;
+    }
+
+    static function applyCursorOptions(array $options) {
+        $methods = [
+            'skip',
+            'limit',
+            'sort',
+            'fields',
+            'timeout',
+            'batchSize',
+        ];
+        foreach($methods as $key) {
+            if(!empty($options[$key])) {
+                $result->$key($options[$key]);
+            }
+        }
+    }
+
+    static function count($query = []) {
+        $query = static::query($query);
+        $query = static::serializeAttributes($query);
+        return static::table()->count($query);
     }
 
     static function query($query, $createAttributes = true) {
@@ -151,10 +174,13 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
         return get_called_class();
     }
 
-    protected static function serializeAttributes(array $attributes) {
+    protected static function serializeAttributes(array $attributes, array $options = []) {
         $result = [];
         foreach($attributes as $key => $value) {
-            $result[$key] = $value instanceof AttributeInterface ? $value->serialize() : $value;
+            if($value instanceof AttributeInterface) {
+                $value = $value->serialize($options);
+            }
+            $result[$key] = $value;
         }
         return $result;
     }
@@ -305,6 +331,6 @@ class ModelBase extends Component implements ModelInterface, AttributeInterface 
     }
 
     function toArray() {
-        return $this->value();
+        return $this->serialize(['stringify' => true]);
     }
 }

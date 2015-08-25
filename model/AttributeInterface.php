@@ -4,6 +4,6 @@ namespace hikari\cms\model;
 
 interface AttributeInterface {
     function value();
-    function serialize();
+    function serialize(array $options);
     function __toString();
 }

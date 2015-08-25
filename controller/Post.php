@@ -9,7 +9,7 @@ use hikari\cms\model\Page as PageModel;
 class Post extends Crud {
 
     // This should not be here, move back to Index and fetch start page.
-    function index() {
+    /*function index() {
         $query = [];
         if(get_called_class() != __CLASS__) {
             $query['class'] = $this->modelClassName();
@@ -25,5 +25,5 @@ class Post extends Crud {
             'model' => PostModel::create(),
             'result' => $posts,
         ];
-    }
+    }*/
 }

@@ -15,8 +15,8 @@ class Attribute implements AttributeInterface {
         return $this->value;
     }
 
-    function serialize() {
-        return $this->value;
+    function serialize(array $options) {
+        return $this->value();
     }
 
     function option($key, $default = null) {
@@ -25,7 +25,7 @@ class Attribute implements AttributeInterface {
 
     function __toString() {
         try {
-            return (string)$this->value();
+            return (string)$this->value(['stringify' => true]);
         } catch(\Exception $ex) {
             var_dump($ex);
             die;

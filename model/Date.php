@@ -4,7 +4,7 @@ namespace hikari\cms\model;
 
 class Date extends Attribute {
 
-    function serialize() {
+    function serialize(array $options) {
         $value = $this->value();
         if($value instanceof \DateTime) {
             $date = $value->getTimestamp();

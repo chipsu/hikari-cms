@@ -6,14 +6,14 @@ namespace hikari\cms\model;
 class Reference extends Id {
     public $reference;
 
-    function serialize() {
+    function serialize(array $options) {
         if($this->reference) {
             $id = $this->reference->getId();
             if($id instanceof Id) {
-                $this->value = $id->value;
+                $this->value = $id->value();
             }
         }
-        return $this->value ? new \MongoId($this->value) : null;
+        return $this->value ? $this->value : null;
     }
 
     function fetch() {
@@ -43,7 +43,7 @@ class Reference extends Id {
 
     function __call($method, array $args) {
         if($reference = $this->fetch()) {
-            return call_user_func_array(array($reference, $method), $args);
+            return call_user_func_array([$reference, $method], $args);
         }
         return null;
     }
